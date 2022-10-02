@@ -15,4 +15,5 @@ public class Words {
     public static String getWord() {
         return words[RANDOM.nextInt(words.length)].toUpperCase();
     }
+
 }

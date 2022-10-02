@@ -5,7 +5,10 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import static org.example.Display.*;
+
 public class Game {
+
     static int lives = 8;
     private static final Pattern pattern = Pattern.compile("[a-zA-Z]");
 
@@ -16,7 +19,7 @@ public class Game {
     static ArrayList<String> guessedLetters = new ArrayList<>();
 
     public static void setLevel() {
-        System.out.println("What level do you want to play? easy = 8 lives/hard = 5 lives/extreme = 3 lives");
+        System.out.println("What level do you want?" + GREEN + " easy = 8 lives/" + YELLOW + " hard = 5 lives/" + RED + " extreme = 3 lives " + GREEN + "(default = easy)" + RESET);
         Scanner newScanner = new Scanner(System.in);
         String level = newScanner.nextLine();
         switch (level) {
@@ -45,40 +48,44 @@ public class Game {
         System.out.println(String.join(" ", floorArr));
     }
 
-    public static void playGame() {
+    public void playGame() {
         startGame();
-
         while(isGameOn) {
-            // reset boolean to false, print guess a letter, take input, check if letter in a word, if yes add it to the
-            // display, if not take away a life. Add letter to guessed array.
-            boolean inAWord = false;
-            System.out.println("Guess the letter");
-            String letter = "" + scanner.next().toUpperCase().charAt(0);
-            for (int i = 0; i < word.length(); i++) {
-                if(letter.equals(""+word.charAt(i))) {
-                    floorArr[i] = letter;
-                    inAWord = true;
-                }
-            }
-            if(!inAWord && checkLetter(letter)) lives--;
-            if(checkLetter(letter)) guessedLetters.add(letter);
-
+            checkLetterInAWord();
             // display drawing, word and guessed letters
             Display.displayDrawing(lives);
             Display.displayWordAndLetters();
-
-            // check for endgame
-            if(lives == 0) {
-                System.out.println("The word was: " + word);
-                playAgain();
-            }
-            if(!Arrays.toString(floorArr).contains("_")) {
-                System.out.println("You won!");
-                playAgain();
-            }
+            checkEndGame();
         }
     }
 
+    private static void checkLetterInAWord(){
+        // reset boolean to false, print guess a letter, take input, check if letter in a word, if yes add it to the
+        // display, if not take away a life. Add letter to guessed array.
+        boolean inAWord = false;
+        System.out.println("Guess the letter");
+        String letter = "" + scanner.next().toUpperCase().charAt(0);
+        for (int i = 0; i < word.length(); i++) {
+            if(letter.equals(""+word.charAt(i))) {
+                floorArr[i] = letter;
+                inAWord = true;
+            }
+        }
+        if(!inAWord && checkLetter(letter)) lives--;
+        if(checkLetter(letter)) guessedLetters.add(letter);
+    }
+
+    private static void checkEndGame() {
+        // check for endgame
+        if(lives == 0) {
+            System.out.println(RED + "The word was: " + word + RESET);
+            playAgain();
+        }
+        if(!Arrays.toString(floorArr).contains("_")) {
+            System.out.println(GREEN + "You won!" + RESET);
+            playAgain();
+        }
+    }
     // check if user wants to play again, and if yes, start game
     public static void playAgain() {
         isGameOn = false;
